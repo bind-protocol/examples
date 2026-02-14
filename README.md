@@ -33,7 +33,7 @@ Working examples for [`@bind-protocol/sdk`](https://www.npmjs.com/package/@bind-
 - Once you've generated a proof you will get timeboxes, pre-signed S3 download links for the proof artifacts. You can drag and drop these into
 the associated file drops in on the [Verify Proof](https://dashboard-dev.bindprotocol.xyz/verify-proof) page if you wish, or you can navigate to
 the [Prove Jobs](https://dashboard-dev.bindprotocol.xyz/prove-jobs) page. 
-- If you've run the `verify` step you can see an issued credentail on the [Credentials](https://dashboard-dev.bindprotocol.xyz/proof-credentials) page
+- If you've run the `verify` step you can see an issued credential on the [Credentials](https://dashboard-dev.bindprotocol.xyz/proof-credentials) page
 ## Prerequisites
 
 - Node.js 18+
