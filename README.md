@@ -22,18 +22,18 @@ Working examples for [`@bind-protocol/sdk`](https://www.npmjs.com/package/@bind-
 - Sign up at [https://dashboard.bindprotocol.xyz](https://dashboard.bindprotocol.xyz)
   - Select `Prover` account type (`Verifer` accounts cannot create proofs, only verify shared proofs and issue W2C JWT credentials)
   - Check your email for the confirmation code
-- Navigate to the [Policy Marketplace](`https://dashboard-dev.bindprotocol.xyz/marketplace/policies`)
+- Navigate to the [Policy Marketplace](`https://dashboard.bindprotocol.xyz/marketplace/policies`)
   - Install one of the `demo` policies, such as `Credit Score Demo`
-- Create an [API key](https://dashboard-dev.bindprotocol.xyz/keys)
+- Create an [API key](https://dashboard.bindprotocol.xyz/keys)
   - Copy the key
 - Run the `setup` script (`npm run setup` or `bash setip.sh`) in the `example` folder for the policy you installed
   - You will be prompted to provide your API key
   - You will also be prompted for a verifer key, you can use the same API key from your `Prover` account
 - Run the various example steps
 - Once you've generated a proof you will get timeboxes, pre-signed S3 download links for the proof artifacts. You can drag and drop these into
-the associated file drops in on the [Verify Proof](https://dashboard-dev.bindprotocol.xyz/verify-proof) page if you wish, or you can navigate to
-the [Prove Jobs](https://dashboard-dev.bindprotocol.xyz/prove-jobs) page. 
-- If you've run the `verify` step you can see an issued credential on the [Credentials](https://dashboard-dev.bindprotocol.xyz/proof-credentials) page
+the associated file drops in on the [Verify Proof](https://dashboard.bindprotocol.xyz/verify-proof) page if you wish, or you can navigate to
+the [Prove Jobs](https://dashboard.bindprotocol.xyz/prove-jobs) page. 
+- If you've run the `verify` step you can see an issued credential on the [Credentials](https://dashboard.bindprotocol.xyz/proof-credentials) page
 ## Prerequisites
 
 - Node.js 18+
