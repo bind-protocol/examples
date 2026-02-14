@@ -32,8 +32,8 @@ Working examples for [`@bind-protocol/sdk`](https://www.npmjs.com/package/@bind-
 - Run the various example steps
 - Once you've generated a proof you will get timeboxes, pre-signed S3 download links for the proof artifacts. You can drag and drop these into
 the associated file drops in on the [Verify Proof](https://dashboard-dev.bindprotocol.xyz/verify-proof) page if you wish, or you can navigate to
-the (Prove Jobs)[https://dashboard-dev.bindprotocol.xyz/prove-jobs] page. 
-- If you've run the `verify` step you can see an issued credentail on the (Credentials)[https://dashboard-dev.bindprotocol.xyz/proof-credentials] page
+the [Prove Jobs](https://dashboard-dev.bindprotocol.xyz/prove-jobs) page. 
+- If you've run the `verify` step you can see an issued credentail on the [Credentials](https://dashboard-dev.bindprotocol.xyz/proof-credentials) page
 ## Prerequisites
 
 - Node.js 18+
@@ -58,9 +58,35 @@ The setup script walks you through creating a `.env` file and installing depende
 
 Each example follows the same core flow:
 
-1. **Prove** — submit private inputs to a policy and generate a ZK proof
-2. **Share** — share the proof with a verifier organization
-3. **Verify** — the verifier cryptographically checks the proof and reads the disclosed output, without ever seeing the private inputs
+```mermaid
+sequenceDiagram
+    participant User
+    participant Bind as Bind Protocol
+    participant Source as Data Source<br/>(HTTPS API)
+    participant Verifier
+
+    Note over User,Verifier: 1. PROVE
+
+    User->>Bind: Submit policy + private inputs
+    Bind->>Source: Fetch data via zkTLS
+    Source-->>Bind: Authenticated response
+    Bind->>Bind: Execute policy against data
+    Bind->>Bind: Generate ZK proof
+    Bind-->>User: Verifiable Credential + ZK proof
+
+    Note over User,Verifier: 2. SHARE
+
+    User->>Verifier: Present credential + proof
+    Note right of User: Private inputs are never<br/>included in the payload
+
+    Note over User,Verifier: 3. VERIFY
+
+    Verifier->>Verifier: Cryptographically verify ZK proof
+    Verifier->>Verifier: Read disclosed output fields
+    Verifier-->>User: Accepted ✓
+
+    Note over User,Verifier: Private inputs never leave the User's device
+```
 
 See each example's README for the full walkthrough.
 
