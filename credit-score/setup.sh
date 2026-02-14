@@ -43,7 +43,7 @@ echo "  Fill in the values below. Press Enter to accept [defaults]."
 echo ""
 
 # BIND_API_URL
-default_url="${BIND_API_URL:-https://api-dev.bindprotocol.xyz}"
+default_url="${BIND_API_URL:-https://api.bindprotocol.xyz}"
 read -p "  BIND_API_URL [$default_url]: " bind_api_url
 bind_api_url="${bind_api_url:-$default_url}"
 
