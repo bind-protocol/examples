@@ -1,0 +1,22 @@
+{
+  "name": "@bind-protocol/sdk-example-credit-score",
+  "version": "1.0.0",
+  "description": "Credit Score demo example using the Bind Protocol SDK",
+  "type": "module",
+  "scripts": {
+    "start": "npx tsx src/index.ts",
+    "get-policy": "npx tsx src/get-policy.ts",
+    "circuits": "npx tsx src/list-circuits.ts",
+    "prove": "npx tsx src/submit-prove-job.ts",
+    "verify": "npx tsx src/verifier-example.ts",
+    "setup": "./setup.sh"
+  },
+  "dependencies": {
+    "@bind-protocol/sdk": "0.12.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}

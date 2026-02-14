@@ -1,0 +1,156 @@
+{
+  "id": "bind.demo.credit-score",
+  "version": "0.1.0",
+  "metadata": {
+    "title": "Credit Score Demo",
+    "description": "Evaluates creditworthiness based on debt-to-income ratio and credit history",
+    "category": "demo",
+    "namespace": "bind"
+  },
+  "subject": {
+    "type": "individual",
+    "identifier": "wallet_address"
+  },
+  "outputs": [
+    {
+      "name": "approved",
+      "type": "boolean",
+      "derive": {
+        "kind": "PASS_FAIL"
+      },
+      "disclosed": true
+    }
+  ],
+  "validity": {
+    "ttl": "P30D"
+  },
+  "disclosure": {
+    "default": "SELECTIVE",
+    "exposeClaims": ["approved"]
+  },
+  "integrity": {
+    "canonicalization": "RFC8785",
+    "policyHash": "sha256:d09a71035f83ca154545913e5ecc3b1580f2e2e3207198141d12dc5b27c7cfcc"
+  },
+  "inputs": [
+    {
+      "id": "income",
+      "source": {
+        "kind": "static"
+      },
+      "signal": "income",
+      "valueType": "number",
+      "time": {
+        "mode": "point"
+      },
+      "aggregation": {
+        "op": "latest"
+      },
+      "unit": "USD"
+    },
+    {
+      "id": "debt",
+      "source": {
+        "kind": "static"
+      },
+      "signal": "debt",
+      "valueType": "number",
+      "time": {
+        "mode": "point"
+      },
+      "aggregation": {
+        "op": "latest"
+      },
+      "unit": "USD"
+    },
+    {
+      "id": "credit_history_months",
+      "source": {
+        "kind": "static"
+      },
+      "signal": "credit_history_months",
+      "valueType": "number",
+      "time": {
+        "mode": "point"
+      },
+      "aggregation": {
+        "op": "latest"
+      },
+      "unit": "months"
+    }
+  ],
+  "rules": [
+    {
+      "id": "min_credit_history",
+      "description": "Must have at least 12 months of credit history",
+      "assert": {
+        "type": "cmp",
+        "cmp": ">=",
+        "left": {
+          "type": "ref",
+          "inputId": "credit_history_months"
+        },
+        "right": {
+          "type": "const",
+          "value": 12
+        }
+      },
+      "severity": "fail"
+    },
+    {
+      "id": "debt_to_income_ratio",
+      "description": "Debt-to-income ratio must be 50% or less",
+      "assert": {
+        "type": "cmp",
+        "cmp": "<=",
+        "left": {
+          "type": "op",
+          "op": "*",
+          "args": [
+            {
+              "type": "ref",
+              "inputId": "debt"
+            },
+            {
+              "type": "const",
+              "value": 10000
+            }
+          ]
+        },
+        "right": {
+          "type": "op",
+          "op": "*",
+          "args": [
+            {
+              "type": "ref",
+              "inputId": "income"
+            },
+            {
+              "type": "const",
+              "value": 5000
+            }
+          ]
+        }
+      },
+      "severity": "fail"
+    }
+  ],
+  "evaluation": {
+    "kind": "PASS_FAIL",
+    "scoreRange": {
+      "min": 0,
+      "max": 100
+    },
+    "baseline": 50,
+    "contributions": []
+  },
+  "proving": {
+    "circuitId": "bind.demo.credit_score.v0_1_0",
+    "inputTypes": {
+      "income": "u64",
+      "debt": "u64",
+      "credit_history_months": "u32"
+    },
+    "outputType": "u8"
+  }
+}              
