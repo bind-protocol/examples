@@ -139,6 +139,35 @@ examples/dimo-risk/
 | `BIND_VERIFIER_API_KEY` | For verify | Verifier's API key |
 | `SHARED_PROOF_ID` | For verify | Proof ID to verify |
 
+## Using the DIMO Adapter
+
+The SDK includes a built-in DIMO adapter (`@bind-protocol/sdk/adapters/dimo`) that fetches vehicle telemetry directly from the DIMO network and transforms it into circuit inputs. Instead of manually specifying `mileage_90d`, `data_points`, and `speed_max`, you can let the adapter pull and aggregate the data for you:
+
+```typescript
+import { BindClient, deriveCircuitId } from "@bind-protocol/sdk";
+import { createDimoAdapter } from "@bind-protocol/sdk/adapters/dimo";
+
+// Create the adapter with your DIMO SDK client
+const dimo = createDimoAdapter({ dimoClient });
+
+// Fetch telemetry for a vehicle over a 90-day window
+const telemetry = await dimo.fetchData({
+  vehicleTokenId: "12345",
+  from: "2025-11-01T00:00:00Z",
+  to: "2026-01-30T00:00:00Z",
+});
+
+// Transform raw telemetry into circuit inputs
+const circuitId = deriveCircuitId("bind.mobility.basicriskband", "0.1.0");
+const inputs = dimo.toCircuitInputs(telemetry, circuitId);
+
+// Submit the prove job with the derived inputs
+const client = new BindClient({ apiKey, baseUrl });
+const { jobId } = await client.submitProveJob(circuitId, inputs);
+```
+
+The adapter handles the GraphQL queries and hourly aggregation (SUM for mileage, COUNT for data points, MAX for speed) so you don't have to compute the inputs yourself.
+
 ## Use Cases
 
 ### Insurance Underwriting
