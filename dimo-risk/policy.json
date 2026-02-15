@@ -1,0 +1,183 @@
+{
+  "id": "bind.mobility.basicriskband",
+  "version": "0.1.0",
+  "metadata": {
+    "title": "DIMO Vehicle Risk Band",
+    "description": "Evaluates vehicle risk based on mileage, data sufficiency, and driving behavior over a 90-day period",
+    "category": "demo",
+    "namespace": "bind"
+  },
+  "subject": {
+    "type": "vehicle",
+    "identifier": "vehicleTokenId"
+  },
+  "outputs": [
+    {
+      "name": "riskBand",
+      "type": "enum",
+      "derive": {
+        "kind": "BAND",
+        "from": "SCORE",
+        "bands": [
+          { "label": "HIGH", "minInclusive": 0, "maxExclusive": 41 },
+          { "label": "MEDIUM", "minInclusive": 41, "maxExclusive": 71 },
+          { "label": "LOW", "minInclusive": 71, "maxExclusive": 101 }
+        ]
+      },
+      "disclosed": true
+    }
+  ],
+  "validity": {
+    "ttl": "P90D"
+  },
+  "disclosure": {
+    "default": "SELECTIVE",
+    "exposeClaims": ["riskBand"]
+  },
+  "integrity": {
+    "canonicalization": "RFC8785",
+    "policyHash": "sha256:placeholder"
+  },
+  "inputs": [
+    {
+      "id": "mileage_90d",
+      "source": {
+        "kind": "static"
+      },
+      "signal": "powertrainTransmissionTravelledDistance",
+      "valueType": "number",
+      "time": {
+        "mode": "relative",
+        "lookback": "90d"
+      },
+      "aggregation": {
+        "op": "sum"
+      },
+      "unit": "miles"
+    },
+    {
+      "id": "data_points",
+      "source": {
+        "kind": "static"
+      },
+      "signal": "isIgnitionOn",
+      "valueType": "number",
+      "time": {
+        "mode": "relative",
+        "lookback": "90d"
+      },
+      "aggregation": {
+        "op": "count"
+      },
+      "unit": "count"
+    },
+    {
+      "id": "speed_max",
+      "source": {
+        "kind": "static"
+      },
+      "signal": "speed",
+      "valueType": "number",
+      "time": {
+        "mode": "relative",
+        "lookback": "90d"
+      },
+      "aggregation": {
+        "op": "max"
+      },
+      "unit": "miles"
+    }
+  ],
+  "rules": [
+    {
+      "id": "sufficient_data",
+      "description": "Must have at least 100 data points in the 90-day period",
+      "assert": {
+        "type": "cmp",
+        "cmp": ">=",
+        "left": {
+          "type": "ref",
+          "inputId": "data_points"
+        },
+        "right": {
+          "type": "const",
+          "value": 100
+        }
+      },
+      "severity": "fail"
+    },
+    {
+      "id": "low_mileage",
+      "description": "Mileage is 3,000 miles or less in 90 days",
+      "assert": {
+        "type": "cmp",
+        "cmp": "<=",
+        "left": {
+          "type": "ref",
+          "inputId": "mileage_90d"
+        },
+        "right": {
+          "type": "const",
+          "value": 3000
+        }
+      },
+      "severity": "warn"
+    },
+    {
+      "id": "moderate_mileage",
+      "description": "Mileage is 5,000 miles or less in 90 days",
+      "assert": {
+        "type": "cmp",
+        "cmp": "<=",
+        "left": {
+          "type": "ref",
+          "inputId": "mileage_90d"
+        },
+        "right": {
+          "type": "const",
+          "value": 5000
+        }
+      },
+      "severity": "warn"
+    },
+    {
+      "id": "no_extreme_speed",
+      "description": "Max observed speed is under 100 mph",
+      "assert": {
+        "type": "cmp",
+        "cmp": "<",
+        "left": {
+          "type": "ref",
+          "inputId": "speed_max"
+        },
+        "right": {
+          "type": "const",
+          "value": 100
+        }
+      },
+      "severity": "warn"
+    }
+  ],
+  "evaluation": {
+    "kind": "SCORE",
+    "scoreRange": {
+      "min": 0,
+      "max": 100
+    },
+    "baseline": 50,
+    "contributions": [
+      { "ruleId": "low_mileage", "points": 25, "whenPasses": true },
+      { "ruleId": "moderate_mileage", "points": 15, "whenPasses": true },
+      { "ruleId": "no_extreme_speed", "points": 10, "whenPasses": true }
+    ]
+  },
+  "proving": {
+    "circuitId": "bind.mobility.basicriskband.v0_1_0",
+    "inputTypes": {
+      "mileage_90d": "u32",
+      "data_points": "u32",
+      "speed_max": "u16"
+    },
+    "outputType": "u8"
+  }
+}

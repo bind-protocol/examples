@@ -43,12 +43,13 @@ the [Prove Jobs](https://dashboard.bindprotocol.xyz/prove-jobs) page.
 
 | Example | Description | Key concepts |
 |---------|-------------|--------------|
-| [credit-score](./credit-score/) | Credit-score verification with ZK proofs | Policies, prove jobs, proof sharing, verification |
+| [credit-score](./credit-score/) | Credit-score verification with ZK proofs | PASS_FAIL policy, prove jobs, proof sharing, credential verification |
+| [dimo-risk](./dimo-risk/) | Vehicle risk band assessment using DIMO telemetry | SCORE→BAND policy, rule contributions, insurance underwriting |
 
 ## Quick Start
 
 ```bash
-cd credit-score
+cd credit-score   # or dimo-risk
 npm run setup
 ```
 
